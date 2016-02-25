@@ -1,0 +1,13 @@
+4b14097823c86f363b3cc4ce23f3bf17 *ChangeLog
+9a62e8aa7c38ff2f8ca355a94a129f9e *DESCRIPTION
+74cd3d0ecd0c788386e8f576f8cb366a *LICENSE
+e5d0892053c7a1dacb658558cfc22bdf *NAMESPACE
+3f4f26c2a595fda75aac300bc40e3faa *R/getPass-package.r
+ca06419041caa36b92a9341528581278 *R/getPass.r
+5c1f60c94ec8038ac7bbbd714d877ee4 *R/utils.r
+80b25a3a600242664ba6b2a2ce71864b *README.md
+9c00dbe390fd9c82612fb946a560fc39 *cleanup
+7ecf517905775b8b9621f8b82c70e70d *man/getPass-package.Rd
+e1a341a9dbbba1a0e5864575722a9014 *man/getPass.Rd
+5be15032b77e3dd028a05801e40a9daa *src/print_stderr.c
+d7cba438c256eadf81692166d4a7fa18 *src/readline_masked.c

@@ -1,4 +1,4 @@
-/*  Copyright (c) 2016, Schmidt
+/*  Copyright (c) 2016-2017 Drew Schmidt
     All rights reserved.
     
     Redistribution and use in source and binary forms, with or without
@@ -25,46 +25,36 @@
 */
 
 
-#include <R.h>
-#include <Rinternals.h>
+#include "getPass.h"
+#include "platform.h"
 
-#define MAXLEN 201
-char pw[MAXLEN];
+
+#define CTRLC_NO 0
+#define CTRLC_YES 1
+
+#define PWLEN 256
+char pw[PWLEN];
+
 int ctrlc;
 
-
-#define CHARPT(x,i)	((char*)CHAR(STRING_ELT(x,i)))
-
-
-
-#define OS_WINDOWS (defined(__WIN32) || defined(__WIN32__) || defined(_WIN64) || defined(__WIN64) || defined(__WIN64__) || defined(__TOS_WIN__) || defined(__WINNT) || defined(__WINNT__))
-#define OS_LINUX (defined(__gnu_linux__) || defined(__linux__) || defined(__linux))
-
-#if OS_WINDOWS
-#include <windows.h>
-#include <conio.h>
-#else
-#include <stdio.h>
-#include <stdlib.h>
-#include <termios.h>
-#include <unistd.h>
-#include <signal.h>
-
+#if !(OS_WINDOWS)
 static void ctrlc_handler(int signal)
 {
   ctrlc = 1;
 }
-
 #endif
 
 
-SEXP getPass_readline_masked(SEXP msg, SEXP showstars_)
+
+SEXP getPass_readline_masked(SEXP msg, SEXP showstars_, SEXP noblank_)
 {
   SEXP ret;
   const int showstars = INTEGER(showstars_)[0];
-  int i=0;
+  const int noblank = INTEGER(noblank_)[0];
+  int i = 0;
+  int j;
   char c;
-  ctrlc = 0;
+  ctrlc = CTRLC_NO; // must be global!
   
   REprintf(CHARPT(msg, 0));
   
@@ -74,18 +64,20 @@ SEXP getPass_readline_masked(SEXP msg, SEXP showstars_)
   old = tp;
   tp.c_lflag &= ~(ECHO | ICANON | ISIG);
   tcsetattr(0, TCSAFLUSH, &tp);
+
   #if OS_LINUX
-  signal(SIGINT, ctrlc_handler);
+    signal(SIGINT, ctrlc_handler);
   #else
-  struct sigaction sa;
-  sa.sa_handler = ctrlc_handler;
-  sigemptyset(&sa.sa_mask);
-  sa.sa_flags = 0;
-  sigaction(SIGINT, &sa, NULL);
+    struct sigaction sa;
+    sa.sa_handler = ctrlc_handler;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    sigaction(SIGINT, &sa, NULL);
   #endif
+  
 #endif
   
-  for (i=0; i<MAXLEN; i++)
+  for (i=0; i<PWLEN; i++)
   {
 #if OS_WINDOWS
     c = _getch();
@@ -95,7 +87,15 @@ SEXP getPass_readline_masked(SEXP msg, SEXP showstars_)
     
     // newline
     if (c == '\n' || c == '\r')
-      break;
+    {
+      if (noblank && i == 0)
+      {
+        i--;
+        continue;
+      }
+      else
+        break;
+    }
     // backspace
     else if (c == '\b' || c == '\177')
     {
@@ -114,7 +114,7 @@ SEXP getPass_readline_masked(SEXP msg, SEXP showstars_)
       }
     }
     // C-c
-    else if (ctrlc == 1 || c == 3 || c == '\xff')
+    else if (ctrlc == CTRLC_YES || c == 3 || c == '\xff')
     {
 #if !(OS_WINDOWS)
       tcsetattr(0, TCSANOW, &old);
@@ -136,18 +136,21 @@ SEXP getPass_readline_masked(SEXP msg, SEXP showstars_)
   tcsetattr(0, TCSANOW, &old);
 #endif
   
-  if (i == MAXLEN)
+  if (i == PWLEN)
   {
     REprintf("\n");
     error("character limit exceeded");
   }
   
-  if (strncmp(CHARPT(msg, 0), "", 1) != 0)
+  if (showstars || strncmp(CHARPT(msg, 0), "", 1) != 0)
     REprintf("\n");
   
   PROTECT(ret = allocVector(STRSXP, 1));
   SET_STRING_ELT(ret, 0, mkCharLen(pw, i));
-  UNPROTECT(1);
   
+  for (j=0; j<i; j++)
+    pw[j] = '\0';
+  
+  UNPROTECT(1);
   return ret;
 }

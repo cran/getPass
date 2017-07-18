@@ -1,3 +1,25 @@
+Release 0.2-1 (//):
+  * If NULL is returned (on canceled user input), it is now invisible.
+  * Switch to LaTeX vignette.
+  * Add password hashing examples via argon2 to the vignette.
+  * Register native routines.
+  * Fixed clang compiler warning in os detection.
+  * Replaced print_stderr() for message().
+  * Increased buffer length for masked terminal inputs.
+  * Fixed 'noblank' option for the non-masking reader.
+
+Release 0.2-0 (5/31/2016):
+  * C lib re-organization.
+  * Zero out buffer when finished.
+  * Add noblank option.
+  * Better tcltk wrapper for the noblank option.
+
+Release 0.1-2 (5/13/2016):
+  * Fix vignette title.
+  * Add console notification when using tcltk (Rich FitzJohn)
+  * Add tests for terminal reader.
+  * Add screenshots to vignette.
+
 Release 0.1-1 (4/25/2016):
   * Add package vignette.
   * Minor documentation tweaks.

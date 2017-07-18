@@ -4,17 +4,22 @@
 \alias{getPass}
 \title{Password Input}
 \usage{
-getPass(msg = "PASSWORD: ", forcemask = FALSE)
+getPass(msg = "PASSWORD: ", noblank = FALSE, forcemask = FALSE)
 }
 \arguments{
 \item{msg}{The message to enter into the R session before prompting
 for the masked input.  This can be any single string,
-including a "blank", namely \code{""}.}
+possibly including a "blank" (\code{""}); see the \code{noblank}
+argument.}
+
+\item{noblank}{Logical; should blank passwords (\code{""}) be banned?  By default,
+they are allowed, except with RStudio where they are always banned.}
 
 \item{forcemask}{Logical; should the function stop with an error if masking
 is not supported? If \code{FALSE}, the function will default
 to use \code{readline()} with a warning message that the
-input is not masked, and otherwise will stop with an error.}
+input is not masked, and otherwise will stop with an error.
+See the Details section for more information.}
 }
 \value{
 If input is provided, then that is returned. If the user cancels
@@ -31,9 +36,11 @@ as input) is supported on most, but not all
 platforms.  It is supported in RStudio, provided you
 have a suitable version of the GUI.  It should also work in the
 terminal on any major OS.  Finally, it will work in any environment
-where the tcltk package is available.
+where the tcltk package is available (e.g., Windows with RGui).
+Notably, this will not work with Emacs; passwords can be read, but
+there will be no masking.
 
-In the terminal, the maximum length for input is 200 characters.
+In the terminal, the maximum length for input is 255 characters.
 Additionally, messages printed to the terminal (including the 
 "*" masking) are printed to stderr.
 }
@@ -47,4 +54,3 @@ getPass::getPass("Enter the password: ")
 }
 
 }
-

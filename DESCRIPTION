@@ -1,7 +1,7 @@
 Package: getPass
 Type: Package
 Title: Masked User Input
-Version: 0.2-2
+Version: 0.2-4
 Description: A micro-package for reading "passwords", i.e.  reading
     user input with masking, so that the input is not displayed as it 
     is typed.  Currently we have support for 'RStudio', the command line
@@ -9,7 +9,6 @@ Description: A micro-package for reading "passwords", i.e.  reading
 License: BSD 2-clause License + file LICENSE
 Depends: R (>= 3.0.0)
 Imports: utils, rstudioapi (>= 0.5)
-Suggests: argon2
 NeedsCompilation: yes
 ByteCompile: yes
 Authors@R: c(
@@ -22,10 +21,10 @@ URL: https://github.com/wrathematics/getPass
 BugReports: https://github.com/wrathematics/getPass/issues
 Maintainer: Drew Schmidt <wrathematics@gmail.com>
 RoxygenNote: 6.0.1
-Packaged: 2017-07-20 02:04:32 UTC; mschmid3
+Packaged: 2023-12-10 21:24:35 UTC; mschmid3
 Author: Drew Schmidt [aut, cre],
   Wei-Chen Chen [aut],
   Gabor Csardi [ctb] (Improved terminal detection),
   Rich FitzJohn [ctb]
 Repository: CRAN
-Date/Publication: 2017-07-21 09:20:34 UTC
+Date/Publication: 2023-12-10 21:50:02 UTC
